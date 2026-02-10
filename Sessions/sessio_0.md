@@ -31,7 +31,7 @@ Un cop assignat el grup, **un i només un** dels membres del grup haurà d'entra
 
 Aquest semestre implementarem el joc d'enfonsar la flota (Battleship). El principal objectiu de la pràctica 1 serà la implementació del protocol de comunicació a baix nivell, seguint una especificació. Es veurà com enviar i rebre informació entre un Servidor i varis clients, aixó com la gestió de sockets.
 
-Teniu la descripció del joc a l'[enunciat de la pràctica](../Guies/enunciat.md). Hi trobareu tota l'informació i el detall del protocol i els diferents missatges. A cada sessió us anirem guiant sobre quines funcionalitats caldrà implementar, i quines parts seran opcionals i quines no.
+Teniu la descripció del joc a l'[enunciat de la pràctica](../Guies/Ares.md). Hi trobareu tota l'informació i el detall del protocol i els diferents missatges. A cada sessió us anirem guiant sobre quines funcionalitats caldrà implementar, i quines parts seran opcionals i quines no.
 
 
 ## Codi base

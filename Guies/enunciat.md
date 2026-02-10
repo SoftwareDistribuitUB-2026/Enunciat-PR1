@@ -1,1 +1,0 @@
-TODO: Descripció del projecte
