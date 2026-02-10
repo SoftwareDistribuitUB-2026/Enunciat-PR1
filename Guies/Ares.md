@@ -134,8 +134,7 @@ sequenceDiagram
 
 A continuació es mostra la maquina d'estats del client
 
-```Mermaid
-
+```mermaid
 
 stateDiagram-v2
     [*] --> Desconnectat
@@ -169,7 +168,7 @@ stateDiagram-v2
 
 A continuació es mostra la maquina d'estats del servidor
 
-``` Mermaid 
+```mermaid 
 stateDiagram-v2
     [*] --> Esperant
 
