@@ -95,7 +95,7 @@ classDiagram
 
 La classe `AresComUtils` ha d'implementar els mètodes d'escriptura que us permetin passar de la informació a alt nivell (enters, cadenes de caràcters, objectes, ...) a una seqüència ordenada de bytes que enviarem per la xarxa (escriurem al socket de sortida). També ha d'implementar els mètodes que us permetin llegir els bytes que van arribant al socket d'entrada i interpretar-los per recuperar la informació inicial.
 
-Podem plantejar aquesta implementació de moltes maneres. Si ens fixem per exemple en el missatge `CLIENT_REGISTER` del protocol a [missatges](../Guies/Ares.md), caldrà tenir un mètode que el **client** utilitzarà per convertir el `clientId` a un conjunt de bytes que envià a través del socket cap al servidor, i un altre mètode que li permeti al servidor llegir els bytes del socket, identificar que es tracta d'un missatge de tipus `CLIENT_REGISTER` i recuperar el `clientId`.
+Podem plantejar aquesta implementació de moltes maneres. Si ens fixem per exemple en el missatge `CLIENT_REGISTER` del protocol a [missatges](../Guies/Missatges.md), caldrà tenir un mètode que el **client** utilitzarà per convertir el `clientId` a un conjunt de bytes que envià a través del socket cap al servidor, i un altre mètode que li permeti al servidor llegir els bytes del socket, identificar que es tracta d'un missatge de tipus `CLIENT_REGISTER` i recuperar el `clientId`.
 
 En el primer cas, el **client** sap quin tipus de missatge vol escriure, i per tant el format exacte que té. En el segon cas, el **servidor** descobrirà el tipus de missatge en el moment que llegeixi el primer byte (**messageType**), i a partir d'aquell moment haurà d'actuar en conseqüència.
 
@@ -132,6 +132,7 @@ public class MyUnitTest {
 3. Utilitzar el mètode de lectura per llegir els bytes enviats.
 4. Comprovar que la informació rebuda és exctament la mateixa que hem enviat.
 
+**Important** La classe ComUtils s'ha de modificar per a que AresComUtils pugui accedir als attributs de la classe mare. Per aixo consultar [ComUtils](../Guies/ComUtils.md).
 
 **Nota:** Tingueu en compte que els missatges només comuniquen informació. Podeu implementar-los sense necessitat de tenir la lògica del joc implementada. El control d'errors no el fa la classe de comunicacions.
 
