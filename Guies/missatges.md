@@ -5,18 +5,54 @@ Tots els missatges del protocol s'especifiquen a continuació
 | Codi | Tipus de missatge | Direcció | Propòsit |
 |------|------------------|----------|----------|
 | 0x01 | CLIENT_REGISTER | Client → Servidor | Registrar el client |
-| 0x02 | FILE_ANNOUNCE | Client → Servidor | Anunciar els fitxers disponibles |
-| 0x03 | SEARCH_REQUEST | Client → Servidor | Cercar fitxers |
-| 0x04 | SEARCH_RESPONSE | Servidor → Client | Retornar els resultats de la cerca |
-| 0x05 | DOWNLOAD_REQUEST | Client → Servidor | Sol·licitar la descàrrega d’un fitxer |
-| 0x06 | DOWNLOAD_RESPONSE | Servidor → Client | Resposta a la sol·licitud de descàrrega |
-| 0x0A | CHUNK_REQUEST | Bidireccional | Sol·licitar un fragment (Client→Servidor: client sol·licitant, Servidor→Client: el servidor el demana a l’origen) |
-| 0x0B | CHUNK_RESPONSE | Bidireccional | Enviar dades del fragment (Client→Servidor: client origen, Servidor→Client: el servidor el reenvia al sol·licitant) |
-| 0x0C | HASH_VERIFY | Bidireccional | Verificar el hash del fitxer |
-| 0x0D | ERROR | Bidireccional | Missatge d’error |
-| 0x0E | ACK | Bidireccional | Confirmació |
-| 0x0F | SERVER_FILE_REQUEST | Servidor → Client | El servidor sol·licita un fitxer al client |
-| 0x10 | SERVER_FILE_RESPONSE | Client → Servidor | Resposta del client a la sol·licitud de fitxer del servidor |
+| 0x02 | CLIENT_REGISTER_RESPONSE | Servidor → Client | Resposta de registre de client |
+| 0x03 | FILE_ANNOUNCE | Client → Servidor | Anunciar els fitxers disponibles |
+| 0x04 | SEARCH_REQUEST | Client → Servidor | Cercar fitxers |
+| 0x05 | SEARCH_RESPONSE | Servidor → Client | Retornar els resultats de la cerca |
+| 0x06 | DOWNLOAD_REQUEST | Client → Servidor | Sol·licitar la descàrrega d’un fitxer |
+| 0x07 | DOWNLOAD_RESPONSE | Servidor → Client | Resposta a la sol·licitud de descàrrega |
+| 0x08 | CHUNK_REQUEST | Bidireccional | Sol·licitar un fragment (Client→Servidor: client sol·licitant, Servidor→Client: el servidor el demana a l’origen) |
+| 0x09 | CHUNK_RESPONSE | Bidireccional | Enviar dades del fragment (Client→Servidor: client origen, Servidor→Client: el servidor el reenvia al sol·licitant) |
+| 0x0A | HASH_VERIFY | Bidireccional | Verificar el hash del fitxer |
+| 0x0B | ERROR | Bidireccional | Missatge d’error |
+| 0x0C | ACK | Bidireccional | Confirmació |
+
+
+
+# Format dels missatges
+
+Tots els missatges del protocol ARES segueixen un format estàndard consistent en dues parts principals:
+
+## Estructura del missatge
+
+Cada missatge està format per un **capçalera (header)** i una **càrrega útil (payload)**:
+
+```
++------------------+------------------+
+| Header           | Payload          |
+| (fixa)           | (variable)       |
++------------------+------------------+
+```
+
+### Header
+
+El capçalera conté la informació necessària per identificar i processar el missatge:
+
+```
++------------------+
+| Message Type     |
+| (1 byte)         |
++------------------+
+```
+
+- **Message Type** (1 byte): Codi que identifica el tipus de missatge (vegeu la taula del glossari)
+
+
+### Payload
+
+La càrrega útil conté les dades específiques del missatge. La seva estructura i mida varien segons el tipus de missatge. Cada missatge té el seu propi format de payload, que es detalla a continuació a la secció d'especificació.
+
+
 
 
 # Especificació
@@ -38,11 +74,36 @@ Tots els missatges del protocol s'especifiquen a continuació
 - **Client ID Length** (4 bytes): Longitud de la cadena d'identificador del client
 - **Client ID** (variable): Cadena d'identificador del client codificada en UTF-8
 
-**Resposta:** El servidor envia `ACK` (0x0E) en cas d'èxit, `ERROR` (0x0D) en cas de fallada
+**Resposta:** El servidor envia el missatge CLIENT_REGISTER_RESPONSE
 
 ---
 
-#### 2. FILE_ANNOUNCE (0x02)
+#### 2. CLIENT_REGISTER_RESPONSE (0x02)
+**Direcció:** Servidor → Client 
+**Propòsit:** Resposta al registrar el client al servidor
+
+**Payload:**
+```
++------------------+------------------+------------------+
+| Status Code      | Client ID        | Chunk Size       |
+| (1 byte)         | (2 bytes)        | (4 bytes)        |
++------------------+------------------+------------------+
+```
+- **Status Code** (1 byte):
+
+0x00 = Èxit
+
+0x01 = Error, no s'ha pogut registrar el client
+
+
+- **Client ID** (2 bytes): L'ID del client
+- **Chunk size** (4 bytes): tamany dels fragments (chunks) a l'hora de transferir els fitxers
+
+
+
+---
+
+#### 3. FILE_ANNOUNCE (0x03)
 **Direcció:** Client → Servidor  
 **Propòsit:** Anunciar els fitxers disponibles al servidor
 
@@ -53,7 +114,7 @@ Tots els missatges del protocol s'especifiquen a continuació
 | (4 bytes)        | (variable)      | (variable)        |
 +------------------+------------------+------------------+
 
-Cada entrada de fitxer:
+File x:
 +------------------+------------------+------------------+------------------+
 | Filename Length  | Filename         | File Size        | File Hash        |
 | (4 bytes)        | (variable)       | (8 bytes)        | (32 bytes)       |
@@ -71,7 +132,7 @@ Cada entrada de fitxer:
 
 ---
 
-#### 3. SEARCH_REQUEST (0x03)
+#### 4. SEARCH_REQUEST (0x04)
 **Direcció:** Client → Servidor  
 **Propòsit:** Cercar fitxers per patró de nom de fitxer
 
@@ -90,7 +151,7 @@ Cada entrada de fitxer:
 
 ---
 
-#### 4. SEARCH_RESPONSE (0x04)
+#### 5. SEARCH_RESPONSE (0x05)
 **Direcció:** Servidor → Client  
 **Propòsit:** Retornar els resultats de la cerca amb informació dels clients
 
@@ -106,16 +167,10 @@ Cada entrada de fitxer:
 | Filename Length  | Filename         | File Size        | File Hash        |
 | (4 bytes)        | (variable)       | (8 bytes)        | (32 bytes)       |
 +------------------+------------------+------------------+------------------+
-+------------------+------------------+
-| Client Count     | Client IDs       |
-| (4 bytes)        | (variable)       |
-+------------------+------------------+
-
-Per a cada ID de client:
-+------------------+------------------+
-| Client ID Length | Client ID        |
-| (4 bytes)        | (variable)       |
-+------------------+------------------+
++------------------+------------------+------------------+
+| Client Count     | Client ID 1      | Client ID 2      |
+| (4 bytes)        | (2 bytes)        | (2 bytes)        |
++------------------+------------------+------------------+
 ```
 
 - **Result Count** (4 bytes): Nombre de fitxers que coincideixen
@@ -126,12 +181,11 @@ Per a cada ID de client:
   - **File Hash** (32 bytes): Hash SHA-256 del fitxer
   - **Client Count** (4 bytes): Nombre de clients que tenen aquest fitxer
   - Per a cada client:
-    - **Client ID Length** (4 bytes): Longitud de la cadena d'identificador del client
-    - **Client ID** (variable): Identificador del client codificat en UTF-8
+    - **Client ID** (variable): Identificador del client (2 bytes)
 
 ---
 
-#### 5. DOWNLOAD_REQUEST (0x05)
+#### 6. DOWNLOAD_REQUEST (0x06)
 **Direcció:** Client → Servidor  
 **Propòsit:** Sol·licitar la descàrrega d'un fitxer d'un altre client
 
@@ -139,14 +193,14 @@ Per a cada ID de client:
 ```
 +------------------+------------------+------------------+------------------+
 | Filename Length  | Filename         | Source Client    | Source Client ID |
-| (4 bytes)        | (variable)       | Length (4 bytes) | (variable)       |
+| (4 bytes)        | (variable)       | Length (4 bytes) | (2 bytes)        |
 +------------------+------------------+------------------+------------------+
 ```
 
 - **Filename Length** (4 bytes): Longitud de la cadena del nom del fitxer
 - **Filename** (variable): Nom del fitxer codificat en UTF-8 a descarregar
 - **Source Client Length** (4 bytes): Longitud de l'identificador del client origen (0 = qualsevol client disponible)
-- **Source Client ID** (variable): Identificador del client codificat en UTF-8 que té el fitxer (buit si Source Client Length és 0)
+- **Source Client ID** (2 bytes): Identificador del client codificat
 
 **Nota:** Si Source Client Length és 0, el servidor seleccionarà automàticament un client disponible.
 
@@ -154,7 +208,7 @@ Per a cada ID de client:
 
 ---
 
-#### 6. DOWNLOAD_RESPONSE (0x06)
+#### 7. DOWNLOAD_RESPONSE (0x07)
 **Direcció:** Servidor → Client  
 **Propòsit:** Resposta a la sol·licitud de descàrrega
 
@@ -165,8 +219,8 @@ Per a cada ID de client:
 | (1 byte)         | (4 bytes)        | (variable)       | (8 bytes)        |
 +------------------+------------------+------------------+------------------+
 +------------------+------------------+------------------+
-| File Hash        | Source Client    | Source Client ID |
-| (32 bytes)       | Length (4 bytes) | (variable)       |
+| File Hash        | Source Client ID | Transfer ID      |
+| (32 bytes)       | (2 bytes)        | (4 bytes)        |
 +------------------+------------------+------------------+
 ```
 
@@ -178,35 +232,15 @@ Per a cada ID de client:
 - **Filename Length** (4 bytes): Longitud del nom del fitxer (0 si el fitxer no es troba)
 - **Filename** (variable): Nom del fitxer codificat en UTF-8 (buit si el fitxer no es troba)
 - **File Size** (8 bytes): Enter llarg, mida del fitxer en bytes (0 si el fitxer no es troba)
-- **File Hash** (32 bytes): Hash SHA-256 del fitxer (tots zeros si el fitxer no es troba)
-- **Source Client Length** (4 bytes): Longitud de l'identificador del client origen (0 si Status Code != 0x00)
-- **Source Client ID** (variable): Identificador del client codificat en UTF-8 que proporciona el fitxer (buit si Status Code != 0x00)
+- **Source Client ID** (variable): Identificador del client codificat amb dos bytes que proporciona el fitxer (buit si Status Code != 0x00)
+- **Transfer ID** (2 byte): Identificador de la transferencia del fitxer
 
 Si Status Code és `0x00`, el client ha d'esperar missatges `CHUNK_RESPONSE` del servidor (el servidor retransmetrà els fragments del client origen).
 
----
-
-#### 7. FILE_TRANSFER (0x09)
-**Direcció:** Servidor → Client  
-**Propòsit:** Transferir un fragment de dades del fitxer
-
-**Payload:**
-```
-+------------------+------------------+------------------+
-| Chunk Number     | Chunk Size       | Chunk Data       |
-| (4 bytes)        | (4 bytes)        | (variable)       |
-+------------------+------------------+------------------+
-```
-
-- **Chunk Number** (4 bytes): Índex del fragment basat en zero
-- **Chunk Size** (4 bytes): Nombre de bytes en aquest fragment (normalment CHUNK_SIZE, excepte l'últim fragment)
-- **Chunk Data** (variable): Bytes de dades del fitxer en brut
-
-**Nota:** Aquest tipus de missatge pot estar en desús a favor del patró CHUNK_REQUEST/CHUNK_RESPONSE.
 
 ---
 
-#### 8. CHUNK_REQUEST (0x0A)
+#### 8. CHUNK_REQUEST (0x08)
 **Direcció:** Bidireccional  
 **Propòsit:** Sol·licitar un fragment específic d'un fitxer
 
@@ -216,12 +250,13 @@ Si Status Code és `0x00`, el client ha d'esperar missatges `CHUNK_RESPONSE` del
 
 **Payload:**
 ```
-+------------------+
-| Chunk Number     |
-| (4 bytes)        |
-+------------------+
++------------------+------------------+
+| Transfer ID      | Chunk Number     |
+| (4 bytes)        | (4 bytes)        |
++------------------+------------------+
 ```
 
+- **Transfer ID** (4 bytes): Índex del fragment basat en zero a sol·licitar
 - **Chunk Number** (4 bytes): Índex del fragment basat en zero a sol·licitar
 
 **Resposta:** 
@@ -230,57 +265,7 @@ Si Status Code és `0x00`, el client ha d'esperar missatges `CHUNK_RESPONSE` del
 
 ---
 
-#### 8a. SERVER_FILE_REQUEST (0x0F)
-**Direcció:** Servidor → Client (Client origen)  
-**Propòsit:** El servidor sol·licita un fitxer a un client en nom d'un altre client
-
-**Payload:**
-```
-+------------------+------------------+------------------+------------------+
-| Filename Length  | Filename         | Requesting Client| Requesting ID    |
-| (4 bytes)        | (variable)       | Length (4 bytes) | (variable)       |
-+------------------+------------------+------------------+------------------+
-```
-
-- **Filename Length** (4 bytes): Longitud de la cadena del nom del fitxer
-- **Filename** (variable): Nom del fitxer codificat en UTF-8 a enviar
-- **Requesting Client Length** (4 bytes): Longitud de l'identificador del client sol·licitant
-- **Requesting Client ID** (variable): Identificador del client codificat en UTF-8 que ha sol·licitat el fitxer
-
-**Resposta:** El client origen envia `SERVER_FILE_RESPONSE` (0x10)
-
----
-
-#### 8b. SERVER_FILE_RESPONSE (0x10)
-**Direcció:** Client (Origen) → Servidor  
-**Propòsit:** El client origen respon a la sol·licitud de fitxer del servidor
-
-**Payload:**
-```
-+------------------+------------------+------------------+------------------+
-| Status Code      | Filename Length  | Filename         | File Size        |
-| (1 byte)         | (4 bytes)        | (variable)       | (8 bytes)        |
-+------------------+------------------+------------------+------------------+
-+------------------+
-| File Hash        |
-| (32 bytes)       |
-+------------------+
-```
-
-- **Status Code** (1 byte):
-  - `0x00` = Fitxer llest, s'enviaran fragments
-  - `0x01` = Fitxer no trobat
-  - `0x02` = Accés al fitxer denegat
-- **Filename Length** (4 bytes): Longitud del nom del fitxer (0 si Status Code != 0x00)
-- **Filename** (variable): Nom del fitxer codificat en UTF-8 (buit si Status Code != 0x00)
-- **File Size** (8 bytes): Enter llarg, mida del fitxer en bytes (0 si Status Code != 0x00)
-- **File Hash** (32 bytes): Hash SHA-256 del fitxer (tots zeros si Status Code != 0x00)
-
-Si Status Code és `0x00`, el client origen ha d'esperar missatges `CHUNK_REQUEST` del servidor.
-
----
-
-#### 9. CHUNK_RESPONSE (0x0B)
+#### 9. CHUNK_RESPONSE (0x09)
 **Direcció:** Bidireccional  
 **Propòsit:** Enviar dades del fragment
 
@@ -290,12 +275,14 @@ Si Status Code és `0x00`, el client origen ha d'esperar missatges `CHUNK_REQUES
 
 **Payload:**
 ```
-+------------------+------------------+------------------+
-| Chunk Number     | Chunk Size       | Chunk Data       |
-| (4 bytes)        | (4 bytes)        | (variable)       |
-+------------------+------------------+------------------+
++------------------+------------------+------------------+------------------+
+| Transfer ID      | Chunk Number     | Chunk Size       | Chunk Data       |
+| (4 bytes)        | (4 bytes)        | (4 bytes)        | (variable)       |
++------------------+------------------+------------------+------------------+
+
 ```
 
+- **Transfer ID** (4 bytes): ID de la transferencia
 - **Chunk Number** (4 bytes): Índex del fragment basat en zero
 - **Chunk Size** (4 bytes): Nombre de bytes en aquest fragment (0 indica final de fitxer o error)
 - **Chunk Data** (variable): Bytes de dades del fitxer en brut (buit si Chunk Size és 0)
@@ -313,7 +300,7 @@ Si Status Code és `0x00`, el client origen ha d'esperar missatges `CHUNK_REQUES
 
 ---
 
-#### 10. HASH_VERIFY (0x0C)
+#### 11. HASH_VERIFY (0x0A)
 **Direcció:** Client → Servidor o Servidor → Client  
 **Propòsit:** Verificar la integritat del fitxer utilitzant hash
 
@@ -331,7 +318,7 @@ Si Status Code és `0x00`, el client origen ha d'esperar missatges `CHUNK_REQUES
 
 ---
 
-#### 11. ERROR (0x0D)
+#### 12. ERROR (0x0B)
 **Direcció:** Bidireccional  
 **Propòsit:** Indicar una condició d'error
 
@@ -355,7 +342,7 @@ Si Status Code és `0x00`, el client origen ha d'esperar missatges `CHUNK_REQUES
 
 ---
 
-#### 12. ACK (0x0E)
+#### 13. ACK (0x0C)
 **Direcció:** Bidireccional  
 **Propòsit:** Confirmar una operació exitosa
 

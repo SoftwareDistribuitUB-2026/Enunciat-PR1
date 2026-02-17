@@ -69,7 +69,7 @@ sequenceDiagram
     S->>C2: SERVER_FILE_REQUEST (fitxer)
     C2->>S: SERVER_FILE_RESPONSE (OK)
 
-    S->>C1: DOWNLOAD_RESPONSE (disponible + hash + ID C2)
+    S->>C1: DOWNLOAD_RESPONSE (disponible + Transfer ID)
 
     C1->>S: CHUNK_REQUEST (0)
     S->>C2: CHUNK_REQUEST (0)

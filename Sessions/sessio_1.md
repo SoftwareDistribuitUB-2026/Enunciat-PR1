@@ -72,10 +72,16 @@ classDiagram
     ClientHandler ..> AresComUtils: uses
     INetworkObject <|.. AresFile
     AresFile ..> java.io.Serializable: implements
+    Chunk ..> java.io.Serializable: implements
 
     classDef mandatoryClass fill:#ff00003d
 
 ```
+
+
+
+
+
 
 - **ClientHandler:** És la classe del servidor que es fa càrrec de la comunicació amb els clients. S'assignarà un nou **ClientHandler** a cada client que es connecti al servidor. Cada instància de **ClientHandler** s'executa en un Thread independent. Aquesta classe gestiona el registre de clients, l'anunci de fitxers, les cerques i les transferències de fitxers.
 
