@@ -48,4 +48,5 @@ La practica 1 consisteix en implementar un servei de compartició de fitxers amb
 
 | Sessió |  Setmana  | Guió                                      |  Notes   |
 |--------|-----------|-------------------------------------------|----------|
-|    0   | 9 Febrer | [Guió Sessió 0](./Sessions/sessio_0.md)   | Aquesta setmana farem la creació de grups i revisarem el problema a resoldre i el codi que es facilita |
+|    0   | 11 Febrer | [Guió Sessió 0](./Sessions/sessio_0.md)   | Aquesta setmana farem la creació de grups i revisarem el problema a resoldre i el codi que es facilita |
+|    1   | 18 Febrer | [Guió Sessió 1](./Sessions/sessio_1.md)   | Aquesta setmana revisarem el protocol i començarem a implementar missatges |
