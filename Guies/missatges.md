@@ -98,7 +98,7 @@ La càrrega útil conté les dades específiques del missatge. La seva estructur
 0x01 = Error, no s'ha pogut registrar el client
 
 
-- **Client ID** (2 bytes): L'ID del client generat pel servidor en UTF-8
+- **Client ID** (2 bytes): L'ID del client generat pel servidor
 - **Chunk size** (4 bytes): tamany dels fragments (chunks) a l'hora de transferir els fitxers
 
 
