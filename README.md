@@ -52,5 +52,5 @@ La practica 1 consisteix en implementar un servei de compartició de fitxers amb
 |    1   | 18 Febrer | [Guió Sessió 1](./Sessions/sessio_1.md)   | Aquesta setmana revisarem el protocol i començarem a implementar missatges |
 |    2   | 25 Febrer | [Guió Sessió 2](./Sessions/sessio_2.md)   | Aquesta setmana implementarem la maquina d'estats i aprofundirem en el protocol |
 |    3   | 4 Març | [Guió Sessió 3](./Sessions/sessio_3.md)    | Aquesta setmana donarem consells per implementar la maquina d'estats tenint en compte l'us de fils per aconseguir comunicació entre sessions amb clients |
-|    4   | 11 Març | [Guió Sessió 3](./Sessions/sessio_4.md)    | Sessió de proves creuades. Aquesta sessió farem proves entre els diferents grups. |
+|    4   | 11 Març | [Guió Sessió 4](./Sessions/sessio_4.md)    | Sessió de proves creuades. Aquesta sessió farem proves entre els diferents grups. |
 
