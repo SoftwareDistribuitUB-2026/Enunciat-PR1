@@ -24,15 +24,17 @@ El primer pas per poder realitzar la prova creuada és tenir la informació de p
 - **Adreça IP** de la màquina on arrancareu el __Servidor__. Feu servir les mateixes comandes que a la sessió 1
 - **Estat real** de la vostra pràctica:
   - __Servidor__
-    - [] El meu __Servidor__ arranca i permet que es connectin __Clients__, assignant-los a una partida.
-    - [] El meu __Servidor__ té implementada la fase de configuració en que els __Clients__ afegeixen els vaixells al tauler.
-    - [] El meu __Servidor__ implementa la dinàmica de joc, en la qual els __Clients__ van disparant en posicions per enfonsar els vaixells.
-    - [] El meu __Servidor__ implementa el joc **multi-jugador**.
+    - [] El meu __Servidor__ arranca i permet que es connectin __Clients__, assignant-los un identificador.
+    - [] El meu __Servidor__ té implementada la fase de configuració en que els __Clients__ actualitzen la llista de fitxers.
+    - [] El meu __Servidor__ implementa la dinàmica de cerca de fitxers, en la qual els __Clients__ poden fer cerques i obtenen els fitxers que hi encaixen.
+    - [] El meu __Servidor__ implementa la descàrrega de fitxers **amb un client**.
+    - [] El meu __Servidor__ implementa la descàrrega de fitxers **multi-client**.
   - __Client__
-    - [] El meu __Client__ es connecta correctament al servidor, afegint-se a una partida.
-    - [] El meu __Client__ té implementada la fase de configuració en que l'usuari pot anar afegint els vaixells al tauler.
-    - [] El meu __Client__ implementa la dinàmica de joc, en la qual l'usuari va indicant les posicions on disparar per enfonsar els vaixells de l'oponent.
-  
+    - [] El meu __Client__ es connecta correctament al servidor i s'hi registra.
+    - [] El meu __Client__ té implementada la fase de configuració en que actualitza la llista dels fitxers disponibles.
+    - [] El meu __Client__ implementa la dinàmica de cerca de fitxers, en la qual l'usuari indica un patró de cerca i obté una llista de fitxers disponibles que hi encaixen.
+    - [] El meu __Client__ implementa la dinàmica de transferència de fitxers, enviant els fitxers que se li demanen i rebent els que ha sol·licitat.
+
 A partir d'aquesta informació, s'organitzaran les proves creuades. A cada grup se li assignarà un mínim de dos grups per provar. Segons l'estat de la pràctica dels grups, podem tenir 3 escenàris:
 
 - El grup té una implementació igual o més avançada que la nostra: Provem la part que tenim implementada.
